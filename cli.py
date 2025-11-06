@@ -1,7 +1,7 @@
 #import toDoList
-from toDoList import ToDoListCLI
+from toDoList import ToDoList
 
-task = ToDoListCLI()
+task = ToDoList()
 loop = True
 
 while(loop):

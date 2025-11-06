@@ -4,7 +4,7 @@
 #
 ##################################################
 
-class ToDoListCLI:
+class ToDoList:
     def __init__(self):
         # list to hold tasks
         self.__list_of_tasks = []
