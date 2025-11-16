@@ -7,18 +7,22 @@
 class ToDoList:
     def __init__(self):
         # list to hold tasks
-        self.__list_of_tasks = []
+        self.list_of_tasks = []
     # List tasks
     def listTasks(self):
-        for item in self.__list_of_tasks:
+        for item in self.list_of_tasks:
             print(item)
     # Add task
     def add(self, item: str):
-        self.__list_of_tasks.append(item)
+        if item not in self.list_of_tasks:
+            self.list_of_tasks.append(item)
+            return True
+        else:
+            return False
     # Delete task
     def remove(self, item: str):
         try:
-            self.__list_of_tasks.remove(item)
+            self.list_of_tasks.remove(item)
         except:
             print(f"Item: {item}, not in tasks.")
 
@@ -28,7 +32,7 @@ if __name__ == "__main__":
     test = ["trash", "Luandry", "dishes"]
 
     try:
-        myTest = ToDoListCLI()
+        myTest = ToDoList()
     except:
         print("Failed to instantiate ToDoListCLI.")
 
@@ -39,4 +43,4 @@ if __name__ == "__main__":
         print("Failed to add items from test list to tasks.")
     
     myTest.remove("trash")
-    myTest.tasks()
+    myTest.listTasks()
