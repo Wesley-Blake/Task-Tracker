@@ -1,23 +1,35 @@
-################################################################################
-#
-# Object to urilize the sqlite3 library.
-#
-################################################################################
+"""
+Logic for the task tracker cli.
+"""
 import sqlite3
 from datetime import date, datetime
 
 class TaskTracker:
+    """
+    Object to hold methods for the task tracker cli.
+    """
     def __init__(self, database: str, table: str):
-        # NOTE: Validate input strings.
-        self.database = database
-        self.table = table
-        self.connection = sqlite3.connect(self.database)
-        self.cursor = self.connection.cursor()
-    
+        """
+        Initialize TaskTracker object.
+
+        Parameters:
+            database (str): database name
+            table (str): table name
+        """
+        self.__database = database
+        self.__table = table
+        self.__connection = sqlite3.connect(self.__database)
+        self.__cursor = self.__connection.cursor()
     def check(self) -> bool:
-        self.cursor.executescript(f"""
+        """
+        Method used to make sure the database and table exists.
+
+        Returns:
+            True
+        """
+        self.__cursor.executescript(f"""
         BEGIN;
-        CREATE TABLE IF NOT EXISTS {self.table} (
+        CREATE TABLE IF NOT EXISTS {self.__table} (
             task_name TEXT,
             due_date DATE,
             complete BOOLEAN,
@@ -26,31 +38,59 @@ class TaskTracker:
         COMMIT;
         """)
         return True
-
-    # NOTE: Add date quiry, union?
     def list_task(self, complete: bool = False) -> list: # return list of tuples
-        # NOTE: Validate input
-        list_task_sql = f"SELECT * FROM '{self.table}' WHERE complete={int(complete)}"
-        return self.cursor.execute(list_task_sql).fetchall()
-    
-    def add(self, task: str, due_date: datetime = date.today()) -> None:
-        # NOTE: Validate input
-        add_sql = f"INSERT OR IGNORE INTO {self.table} VALUES('{task}','{due_date}',{int(False)})"
-        self.cursor.execute(add_sql)
-        self.connection.commit()
+        """
+        List tasks in the database base on complete or not.
 
+        Parameters:
+            complete (bool):
+        
+        Returns:
+            list: list of (tasks, date, complete)
+        """
+        if complete:
+            list_task_sql = f"SELECT * FROM '{self.__table}'"
+        else:
+            list_task_sql = f"SELECT * FROM '{self.__table}' WHERE complete={int(complete)}"
+        return self.__cursor.execute(list_task_sql).fetchall()
+    def add(self, task: str, due_date: datetime = date.today()) -> None:
+        """
+        Add task to database.
+
+        Parameters:
+            task (str): name of the task.
+            due_date (datetime): due date of the task. Defaults to today.
+        
+        Returns:
+            None
+        """
+        add_sql = f"INSERT OR IGNORE INTO {self.__table} VALUES('{task}','{due_date}',{int(False)})"
+        self.__cursor.execute(add_sql)
+        self.__connection.commit()
     def complete(self,
                 task: str,
                 due_date: datetime = date.today(),
                 complete: bool = True
                 ) -> None:
-        # NOTE: Validate input
-        complete_sql = f"UPDATE {self.table}\
+        """
+        Complete tasks in the database.
+
+        Parameters:
+            task (str): name of the task.
+            due_date (datetime): due date of the task. Defaults to today.
+            complete (bool): Defaults to True.
+
+        Returns:
+            None
+        """
+        complete_sql = f"UPDATE OR IGNORE {self.__table}\
                         SET complete={int(complete)}\
                         WHERE task_name='{task}' AND due_date='{due_date}'"
-        self.cursor.execute(complete_sql)
-        self.connection.commit()
-    # NOTE: Commit function?
-    def close():
-        self.connection.commit()
-        self.connection.close()
+        self.__cursor.execute(complete_sql)
+        self.__connection.commit()
+    def close(self):
+        """
+        Commits and closes the connection to the database.
+        """
+        self.__connection.commit()
+        self.__connection.close()
