@@ -48,10 +48,7 @@ class TaskTracker:
         Returns:
             list: list of (tasks, date, complete)
         """
-        if complete:
-            list_task_sql = f"SELECT * FROM '{self.__table}'"
-        else:
-            list_task_sql = f"SELECT * FROM '{self.__table}' WHERE complete={int(complete)}"
+        list_task_sql = f"SELECT * FROM '{self.__table}'"
         return self.__cursor.execute(list_task_sql).fetchall()
     def add(self, task: str, due_date: datetime = date.today()) -> None:
         """
