@@ -6,9 +6,9 @@ import argparse
 from datetime import datetime
 import tasktracker
 
-def _parse_datetime(date_string):
+def _parse_datetime(date_string: str) -> datetime:
     try:
-        return datetime.strptime(date_string, '%Y-%m-%d').date()
+        return datetime.strptime(date_string, '%Y-%m-%d').date() # type: ignore
     except ValueError as exc:
         raise argparse.ArgumentTypeError(f"Invalid date format: {date_string}. Use 'YYYY-MM-DD'.") from exc
 
@@ -48,9 +48,9 @@ if __name__ == "__main__":
     if args.add:
         tasks.add(task=args.name, due_date=args.due_date)
     if args.list:
-        for i in tasks.list_task():
-            print(i)
+        for task in tasks.list_task():
+            print(task)
     if args.complete:
         tasks.complete(args.name, due_date=args.due_date)
 
-tasks.close()
+    tasks.close()
