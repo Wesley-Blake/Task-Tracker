@@ -2,7 +2,7 @@
 Logic for the task tracker cli.
 """
 import sqlite3
-from datetime import date, datetime
+from datetime import date
 
 class TaskTracker:
     """
@@ -38,7 +38,7 @@ class TaskTracker:
         COMMIT;
         """)
         return True
-    def list_task(self, complete: bool = False) -> list: # return list of tuples
+    def list_task(self, complete: bool = False) -> list[tuple[str, date, bool]]: # return list of tuples
         """
         List tasks in the database base on complete or not.
 
@@ -50,7 +50,7 @@ class TaskTracker:
         """
         list_task_sql = f"SELECT * FROM '{self.__table}'"
         return self.__cursor.execute(list_task_sql).fetchall()
-    def add(self, task: str, due_date: datetime = date.today()) -> None:
+    def add(self, task: str, due_date: date = date.today()) -> None:
         """
         Add task to database.
 
@@ -65,10 +65,10 @@ class TaskTracker:
         self.__cursor.execute(add_sql)
         self.__connection.commit()
     def complete(self,
-                task: str,
-                due_date: datetime = date.today(),
-                complete: bool = True
-                ) -> None:
+            task: str,
+            due_date: date= date.today(),
+            complete: bool = True
+            ) -> None:
         """
         Complete tasks in the database.
 
