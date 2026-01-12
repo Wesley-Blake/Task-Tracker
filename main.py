@@ -13,27 +13,28 @@ def _parse_datetime(date_string: str) -> datetime:
         raise argparse.ArgumentTypeError(f"Invalid date format: {date_string}. Use 'YYYY-MM-DD'.") from exc
 
 parser = argparse.ArgumentParser(
-                            prog="tasktracekrcli",
-                            description="Create tasks that are marked unique by name and date in a sqlite3 database.",
-                            epilog="")
+    prog="tasktracekrcli",
+    description="Create tasks that are marked unique by name and date in a sqlite3 database.",
+    epilog="")
 # Important flags
 parser.add_argument("-a", "--add",
-                action="store_true",
-                help="Name of task to add, -d is optional, assumed today.")
+    action="store_true",
+    help="Name of task to add, -d is optional, assumed today.")
 parser.add_argument("-l", "--list",
-                action="store_true",
-                help="List tasks in the data base, -d will specify a date.")
+    action="store_true",
+    help="List tasks in the data base, -d will specify a date.")
 parser.add_argument("-c", "--complete",
-                action="store_true",
-                help="Completes a task, requires -a and -d is option")
+    action="store_true",
+    help="Completes a task, requires -a and -d is option")
+parser.add_argument("-n", "--name",
+    type=str,
+    help="Name of task to modify or add.")
 
 # Optional flags
-parser.add_argument("-n", "--name",
-                type=str,
-                help="Name of task to modify or add.")
 parser.add_argument("-d", "--due_date",
-                type=_parse_datetime,
-                help="Optional flag to -a, -l, -c.")
+    type=_parse_datetime,
+    help="Optional flag to -a, -l, -c.")
+
 # Parse arguments
 args = parser.parse_args()
 
@@ -42,7 +43,7 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(1)
     else:
-        tasks = tasktracker.TaskTracker("real_task_database.db", "task_table")
+        tasks = tasktracker.TaskTracker("task_database.db", "task_table")
         tasks.check()
 
     if args.add:
