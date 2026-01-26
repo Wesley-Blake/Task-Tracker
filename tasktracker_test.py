@@ -21,13 +21,6 @@ class TestTaskTracker(unittest.TestCase):
         result = self.tracker.check()
         self.assertTrue(result)
         # Verify that the table exists by adding a task
-        try:
-            self.tracker.add("Test Task 3")
-            tasks = self.tracker.list_task()
-            self.assertIn(("Test Task 3", date.today().isoformat(), 0), tasks)
-        except Exception as e:
-            self.fail(f"Table creation failed with exception: {e}")
-
-
-if __name__ == "__main__":
-    unittest.main()
+        self.tracker.add("Test Task 3")
+        tasks = self.tracker.list_task()
+        self.assertIn(("Test Task 3", date.today().isoformat(), 0), tasks)
